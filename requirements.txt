@@ -2,3 +2,4 @@ pandas
 transformers
 sentence-transformers
 tqdm
+kagglehub

@@ -1,6 +1,9 @@
 # Ignore tracking BERT model 
 models/
 
+# Ignore tracking embeddings for now
+data/arashnic_book-recommendation-dataset/embeddings.npy
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
