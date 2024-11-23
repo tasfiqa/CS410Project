@@ -64,8 +64,8 @@ The project uses the `multi-qa-mpnet-base-cos-v1` model from the `sentence-trans
 
 Due to size constraints, the model and embeddings are stored on Google Drive. You can download them using the following links:
 
-- [Model Download Link](https://drive.google.com/temp)
-- [Embeddings Download Link](https://drive.google.com/temp)
+- [Model Download Link]([https://drive.google.com/temp](https://drive.google.com/drive/folders/1S2yuk7m_2cgG6pjHyNwibz-BRyxlrL-e?usp=drive_link))
+- [Embeddings Download Link]([https://drive.google.com/temp](https://drive.google.com/file/d/1472tKVjS0GwDQcjWBFOJhXn6WF8zDUK_/view?usp=drive_link))
 
 After downloading, place the model in the `models/` directory and the embeddings in the `data/embeddings/` directory.
 
