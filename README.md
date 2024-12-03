@@ -3,7 +3,7 @@ UIUC CS 410 Project for Fall 2024
 
 ## Overview
 
-This project is a book recommendation system that leverages machine learning models to provide personalized book suggestions. The system uses a dataset from Kaggle and processes it to generate embeddings for book titles, which are then used to compute similarities and make recommendations.
+This project is a book recommendation system that leverages machine learning models to provide personalized book suggestions. The system fetches a dataset from Kaggle, generates embeddings on the book titles and descriptions, then uses those embeddings to compute similarity scores against user queries and recommend the highest-scoring matches.
 
 ## Table of Contents
 
@@ -15,10 +15,8 @@ This project is a book recommendation system that leverages machine learning mod
   - [Model](#model)
     - [Model and Embeddings](#model-and-embeddings)
   - [Usage](#usage)
-  - [Contributing](#contributing)
   - [License](#license)
   - [Acknowledgments](#acknowledgments)
-  - [Contact](#contact)
     - [Code References](#code-references)
 
 ## Installation
@@ -54,11 +52,11 @@ To set up the project, follow these steps:
 
 ## Dataset
 
-The project uses the "Book Recommendation Dataset" from Kaggle. The dataset is stored in the `data/arashnic_book-recommendation-dataset` directory. The dataset includes information about books such as ISBN, title, author, year of publication, and publisher.
+This project utilises a Science Fiction Books dataset sourced from Kaggle. This dataset is stored in the `data/tanguypledel_science-fiction-books-subgenres` directory. The dataset is divided into twelve subcategories, each filtering the science fiction books by a differen subgenre. Each smaller dataset contains a variety of fields about the books within, including the title, author, edition, score, votes, reviews, descriptions, publication date, and a detailed list of genres.
 
 ## Model
 
-The project uses the `multi-qa-mpnet-base-cos-v1` model from the `sentence-transformers` library to generate embeddings for book titles. The model is either loaded from a local directory or downloaded and saved if not already present.
+The project uses the `all-MiniLM-L6-v2` model from the `sentence-transformers` library to generate embeddings based on book titles and descriptions. The model will be loaded from a local cache if available, and if not, it will be downloaded through the sentence_transformers library.
 
 ### Model and Embeddings
 
@@ -74,28 +72,21 @@ After downloading, place the model in the `models/` directory and the embeddings
 To generate embeddings and use the recommendation system, run the following script:
 
 ```bash
-python embeddings.py
+python book_recommendation.py
 ```
 
 
 This script performs the following tasks:
 
-- Loads the book titles from the dataset.
-- Converts titles to lowercase.
-- Generates embeddings using the loaded model.
-- Saves the embeddings to the specified directory.
+- Fetch and merge all subsets from the Science Fiction Books dataset.
+- Load the book titles and descriptions from the dataset.
+- Generate embeddings using the all-MiniLM-L6-v2 model.
+- Save the embeddings to the specified directory.
+- Ask the user to describe their desired book.
+- Generate a vector embedding for the user's query.
+- Search against the pre-computed embeddings for matches.
 
 For more detailed exploration and analysis, you can use the `eda.ipynb` Jupyter notebook, which includes data exploration and model usage examples.
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Commit your changes (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
-5. Create a new Pull Request.
 
 ## License
 
@@ -106,14 +97,11 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - The dataset is sourced from Kaggle.
 - The project uses the `sentence-transformers` library for generating embeddings.
 
-## Contact
-
-
 ### Code References
 
 - The dataset download script is referenced from:
 
-```
+```python
 import kagglehub
 import shutil
 import os
@@ -126,38 +114,40 @@ def download_kaggle_dataset(handle):
     shutil.move(path, local_path)
 
 datasets = [
-    "bahramjannesarr/goodreads-book-datasets-10m", 
-    "jealousleopard/goodreadsbooks", 
+    "bahramjannesarr/goodreads-book-datasets-10m",
+    "jealousleopard/goodreadsbooks",
     "arashnic/book-recommendation-dataset"
 ]
 
-for dataset in datasets: 
+for dataset in datasets:
     download_kaggle_dataset(dataset)
     print(f"Successfully downloaded {dataset}")
+```
 
 
 - The model loading and embedding generation logic is referenced from:
 
+```python
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import pandas as pd
 import os
 
-def load_model(model : str ="multi-qa-mpnet-base-cos-v1") -> SentenceTransformer: 
+def load_model(model : str ="multi-qa-mpnet-base-cos-v1") -> SentenceTransformer:
     model_path = f'models/{model}'
-    if os.path.exists(model_path): 
+    if os.path.exists(model_path):
         return SentenceTransformer(model_path)
 
     # Save model if not saved
     os.makedirs(model_path)
     model = SentenceTransformer(model)
     model.save(model_path)
-    return model 
+    return model
 
-def get_embeddings(model : SentenceTransformer, values : np.ndarray) -> np.ndarray: 
+def get_embeddings(model : SentenceTransformer, values : np.ndarray) -> np.ndarray:
     return model.encode_multi_process(values, show_progress_bar=True)
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     dataset = "arashnic_book-recommendation-dataset/"
     df_path = f"data/{dataset}/Books.csv"
     book_titles = pd.read_csv(df_path)['Book-Title']
@@ -170,7 +160,7 @@ if __name__ == "__main__":
     model = load_model()
     embeddings = get_embeddings(model, book_titles)
     embeddings_write_path = f"data/embeddings/{dataset}"
-    if not os.path.exists(embeddings_write_path): 
+    if not os.path.exists(embeddings_write_path):
         os.makedirs(embeddings_write_path)
         np.save(f"{embeddings_write_path}/embeddings.npy")
 ```
