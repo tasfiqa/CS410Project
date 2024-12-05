@@ -80,6 +80,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - The project uses the `sentence-transformers` library for generating embeddings.
 
 ### Code References
+Dataset can be found [here](https://www.kaggle.com/datasets/tanguypledel/science-fiction-books-subgenres): 
+Tutorial for our software can be found [here](https://drive.google.com/file/d/1FL8jbLJN8gf84ziGvPR03j9v73bF-RnF/view?usp=sharing)
 
 - The dataset download script is referenced from:
 
