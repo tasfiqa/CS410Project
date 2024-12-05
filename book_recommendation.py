@@ -4,6 +4,9 @@ import pandas as pd
 import shutil
 import torch
 from sentence_transformers import SentenceTransformer, util
+from jaccard_similarity import average_jaccard_similarity
+
+torch.set_default_device("cpu")
 
 datasets = [
     "tanguypledel/science-fiction-books-subgenres"
@@ -47,7 +50,7 @@ def generate_embeddings(combined_csv_path):
     descriptions = df['Book_Description'].astype(str).tolist()
     book_embeddings = model.encode(descriptions, convert_to_tensor=True)
     embeddings_path = 'book_embeddings.pt'
-    torch.save(book_embeddings, embeddings_path)
+    torch.save(book_embeddings.to("cpu"), embeddings_path)
     print(f"Saved book embeddings to {embeddings_path}.")
 
 
@@ -57,8 +60,9 @@ def get_recommendations(combined_csv_path, user_description, top_n=10):
     # Search against the pre-computed embeddings using cosine similarity
     # Return the top matches
     df = pd.read_csv(combined_csv_path)
-    query_embedding = model.encode(user_description, convert_to_tensor=True)
-    book_embeddings = torch.load('book_embeddings.pt')
+    query_embedding = model.encode(user_description, convert_to_tensor=True).to('cpu')
+    # device = torch.device("mps") if torch.backends.mps.is_available() else torch.device("cpu")
+    book_embeddings = torch.load('book_embeddings.pt', map_location=torch.device("cpu"))
     similarities = util.pytorch_cos_sim(query_embedding, book_embeddings)[0]
     similarities = similarities.cpu()
     top_results = similarities.topk(k=top_n)
@@ -79,6 +83,10 @@ if __name__ == "__main__":
             print("Goodbye!")
             break
         similar_books = get_recommendations("combined_science_fiction_books.csv", user_query, 10)
+        avg_jaccard_similarity = average_jaccard_similarity(similar_books)
         print("Top ten recommendations:")
         for i, book in enumerate(similar_books, 1):
             print(f"{i}. {book}")
+        
+        print()
+        print(f"The average Jaccard Similarity Score was {avg_jaccard_similarity}")
