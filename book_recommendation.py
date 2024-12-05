@@ -3,10 +3,10 @@ import os
 import pandas as pd
 import shutil
 import torch
-from sentence_transformers import SentenceTransformer, util
+from itertools import combinations
 from jaccard_similarity import average_jaccard_similarity
+from sentence_transformers import SentenceTransformer, util
 
-torch.set_default_device("cpu")
 
 datasets = [
     "tanguypledel/science-fiction-books-subgenres"
@@ -53,6 +53,26 @@ def generate_embeddings(combined_csv_path):
     torch.save(book_embeddings.to("cpu"), embeddings_path)
     print(f"Saved book embeddings to {embeddings_path}.")
 
+def calculate_diversity(recommendations, embeddings, df):
+    # Determine how diverse the recommended book suggestions are
+    # Generate similarity scores for every pair among the recommendations
+    # Calculate the diversity score by subtracting the average simlarity from one
+    indices = []
+    for book in recommendations:
+        if book in df['Book_Title'].values:
+            index = df[df['Book_Title'] == book].index[0]
+            indices.append(index)
+    book_embeddings = embeddings[indices]
+    book_pair_similarities = []
+    for (i, j) in combinations(range(len(book_embeddings)), 2):
+        similarity = util.pytorch_cos_sim(book_embeddings[i], book_embeddings[j]).item()
+        book_pair_similarities.append(similarity)
+    if book_pair_similarities:
+        average_similarity = sum(book_pair_similarities) / len(book_pair_similarities)
+    else:
+        average_similarity = 0
+    diversity_score = 1 - average_similarity
+    return diversity_score
 
 def get_recommendations(combined_csv_path, user_description, top_n=10):
     # Ask the user to describe their desired book
@@ -67,8 +87,7 @@ def get_recommendations(combined_csv_path, user_description, top_n=10):
     similarities = similarities.cpu()
     top_results = similarities.topk(k=top_n)
     similar_books = df.iloc[top_results.indices]['Book_Title'].tolist()
-    return similar_books
-
+    return similar_books, book_embeddings, df
 
 if __name__ == "__main__":
     if not os.path.exists('data/tanguypledel_science-fiction-books-subgenres'):
@@ -82,11 +101,11 @@ if __name__ == "__main__":
         if user_query.lower() == 'q':
             print("Goodbye!")
             break
-        similar_books = get_recommendations("combined_science_fiction_books.csv", user_query, 10)
+        similar_books, book_embeddings, df = get_recommendations("combined_science_fiction_books.csv", user_query, 10)
         avg_jaccard_similarity = average_jaccard_similarity(similar_books)
+        diversity_score = calculate_diversity(similar_books, book_embeddings, df)
         print("Top ten recommendations:")
         for i, book in enumerate(similar_books, 1):
             print(f"{i}. {book}")
-        
-        print()
-        print(f"The average Jaccard Similarity Score was {avg_jaccard_similarity}")
+        print(f"Jaccard Similarity: {avg_jaccard_similarity:.4f}")
+        print(f"Diversity score: {diversity_score:.4f}")
