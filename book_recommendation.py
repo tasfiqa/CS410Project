@@ -67,11 +67,17 @@ def get_recommendations(combined_csv_path, user_description, top_n=10):
 
 
 if __name__ == "__main__":
-    download()
-    combine_csv_files('data/tanguypledel_science-fiction-books-subgenres', 'combined_science_fiction_books.csv')
-    generate_embeddings('combined_science_fiction_books.csv')
+    if not os.path.exists('data/tanguypledel_science-fiction-books-subgenres'):
+        download()
+    if not os.path.exists('combined_science_fiction_books.csv'):
+        combine_csv_files('data/tanguypledel_science-fiction-books-subgenres', 'combined_science_fiction_books.csv')
+    if not os.path.exists('book_embeddings.pt'):
+        generate_embeddings('combined_science_fiction_books.csv')
     while True:
-        user_query = input("\nPlease enter a description of a book that you would like to read: ")
+        user_query = input("\nPlease enter a description of a book that you would like to read or type in q and press enter to exit: ")
+        if user_query.lower() == 'q':
+            print("Goodbye!")
+            break
         similar_books = get_recommendations("combined_science_fiction_books.csv", user_query, 10)
         print("Top ten recommendations:")
         for i, book in enumerate(similar_books, 1):
