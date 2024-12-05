@@ -13,7 +13,6 @@ This project is a book recommendation system that leverages machine learning mod
   - [Installation](#installation)
   - [Dataset](#dataset)
   - [Model](#model)
-    - [Model and Embeddings](#model-and-embeddings)
   - [Usage](#usage)
   - [License](#license)
   - [Acknowledgments](#acknowledgments)
