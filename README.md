@@ -5,6 +5,8 @@ UIUC CS 410 Project for Fall 2024
 
 This project is a book recommendation system that leverages machine learning models to provide personalized book suggestions. The system fetches a dataset from Kaggle, generates embeddings on the book titles and descriptions, then uses those embeddings to compute similarity scores against user queries and recommend the highest-scoring matches.
 
+Tutorial for our software can be found [here](https://drive.google.com/file/d/1FL8jbLJN8gf84ziGvPR03j9v73bF-RnF/view?usp=sharing)
+
 ## Table of Contents
 
 - [CS410Project](#cs410project)
@@ -47,6 +49,8 @@ To set up the project, follow these steps:
 
 This project utilises a Science Fiction Books dataset sourced from Kaggle. This dataset is stored in the `data/tanguypledel_science-fiction-books-subgenres` directory. The dataset is divided into twelve subcategories, each filtering the science fiction books by a differen subgenre. Each smaller dataset contains a variety of fields about the books within, including the title, author, edition, score, votes, reviews, descriptions, publication date, and a detailed list of genres.
 
+Dataset can be found [here](https://www.kaggle.com/datasets/tanguypledel/science-fiction-books-subgenres)
+
 ## Model
 
 The project uses the `all-MiniLM-L6-v2` model from the `sentence-transformers` library to generate embeddings based on book titles and descriptions. The model will be loaded from a local cache if available, and if not, it will be downloaded through the sentence_transformers library.
@@ -80,9 +84,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - The project uses the `sentence-transformers` library for generating embeddings.
 
 ### Code References
-Dataset can be found [here](https://www.kaggle.com/datasets/tanguypledel/science-fiction-books-subgenres): 
-
-Tutorial for our software can be found [here](https://drive.google.com/file/d/1FL8jbLJN8gf84ziGvPR03j9v73bF-RnF/view?usp=sharing)
 
 - The dataset download script is referenced from:
 
