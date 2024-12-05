@@ -32,7 +32,7 @@ To set up the project, follow these steps:
 
 2. **Install the required packages:**
 
-   Ensure you have Python 3.11.4 installed. Then, install the dependencies:
+   Ensure you have Python 3.10.15 installed. Then, install the dependencies:
 
    ```bash
    pip install -r requirements.txt
@@ -42,13 +42,7 @@ To set up the project, follow these steps:
 
 3. **Download the dataset:**
 
-   The dataset is downloaded from Kaggle using the `download_dataset.py` script. Ensure you have Kaggle API credentials set up.
-
-   ```bash
-   python download_dataset.py
-   ```
-
-   This script downloads datasets from Kaggle and moves them to the `data/` directory.
+   The python file script automatically downloads datasets from Kaggle and moves them to the `data/` directory.
 
 ## Dataset
 
@@ -58,18 +52,9 @@ This project utilises a Science Fiction Books dataset sourced from Kaggle. This 
 
 The project uses the `all-MiniLM-L6-v2` model from the `sentence-transformers` library to generate embeddings based on book titles and descriptions. The model will be loaded from a local cache if available, and if not, it will be downloaded through the sentence_transformers library.
 
-### Model and Embeddings
-
-Due to size constraints, the model and embeddings are stored on Google Drive. You can download them using the following links:
-
-- [Model Download Link](https://drive.google.com/drive/folders/1S2yuk7m_2cgG6pjHyNwibz-BRyxlrL-e?usp=drive_link)
-- [Embeddings Download Link](https://drive.google.com/file/d/1472tKVjS0GwDQcjWBFOJhXn6WF8zDUK_/view?usp=drive_link)
-
-After downloading, place the model in the `models/` directory and the embeddings in the `data/embeddings/` directory.
-
 ## Usage
 
-To generate embeddings and use the recommendation system, run the following script:
+To download dataset, generate embeddings, and use the recommendation system, run the following script:
 
 ```bash
 python book_recommendation.py
@@ -85,8 +70,6 @@ This script performs the following tasks:
 - Ask the user to describe their desired book.
 - Generate a vector embedding for the user's query.
 - Search against the pre-computed embeddings for matches.
-
-For more detailed exploration and analysis, you can use the `eda.ipynb` Jupyter notebook, which includes data exploration and model usage examples.
 
 ## License
 
