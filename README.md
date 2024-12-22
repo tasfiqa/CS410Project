@@ -1,5 +1,5 @@
 # CS410Project
-UIUC CS 410 Project for Fall 2024
+Book Recommendation Project for UIUC CS 410 Project for Fall 2024
 
 ## Overview
 
